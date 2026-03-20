@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SiteForge – Drag & Drop Website Builder</title>
+  <link rel="stylesheet" href="css/builder.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" />
+</head>
+
+<body>
+
+  <!-- ====== TOP BAR ====== -->
+  <header id="topbar">
+    <div class="topbar-left">
+      <div class="logo">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>SiteForge</span>
+      </div>
+      <div class="device-btns">
+        <button class="device-btn active" data-device="desktop" title="Desktop"><i
+            class="fa-solid fa-desktop"></i></button>
+        <button class="device-btn" data-device="tablet" title="Tablet"><i
+            class="fa-solid fa-tablet-screen-button"></i></button>
+        <button class="device-btn" data-device="mobile" title="Mobile"><i
+            class="fa-solid fa-mobile-screen"></i></button>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="history-btns">
+        <button id="undoBtn" class="tb-btn secondary" title="Undo (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
+        <button id="redoBtn" class="tb-btn secondary" title="Redo (Ctrl+Y)"><i class="fa-solid fa-rotate-right"></i></button>
+      </div>
+      <div class="v-divider"></div>
+      <button id="structureToggle" class="tb-btn secondary" title="Toggle Visual Structure Outlines"><i class="fa-solid fa-border-all"></i> Show Structure</button>
+      <button id="metaBtn" class="tb-btn secondary"><i class="fa-solid fa-sliders"></i> Site Settings</button>
+      <button id="clearSelectedBtn" class="tb-btn secondary" title="Clear Selected Element"><i class="fa-solid fa-eraser"></i> Clear Selected</button>
+      <button id="clearAllBtn" class="tb-btn secondary" title="Clear All Canvas"><i class="fa-solid fa-trash-can"></i> Clear All</button>
+      <div class="v-divider"></div>
+      <button id="importBtn" class="tb-btn secondary"><i class="fa-solid fa-file-import"></i> Import</button>
+      <button id="previewBtn" class="tb-btn secondary"><i class="fa-solid fa-eye"></i> Preview</button>
+      <button id="themeBtn" class="tb-btn secondary"><i class="fa-solid fa-palette"></i> Themes</button>
+      <button id="exportBtn" class="tb-btn primary"><i class="fa-solid fa-download"></i> Export ZIP</button>
+    </div>
+  </header>
+
+  <!-- ====== MAIN LAYOUT ====== -->
+  <div id="app">
+
+    <!-- === LEFT SIDEBAR: Palette & Layers === -->
+    <aside id="palette">
+      <div class="sidebar-tabs">
+        <button class="tab-btn active" data-tab="palette-content">Components</button>
+        <button class="tab-btn" data-tab="layers-content">Layers</button>
+      </div>
+
+      <div id="palette-content" class="tab-panel">
+        <div class="palette-header">
+            <input type="text" id="paletteSearch" placeholder="Search Components…" />
+        </div>
+        <div class="palette-list" id="paletteList">
+            <!-- Items injected by JS -->
+        </div>
+      </div>
+
+      <div id="layers-content" class="tab-panel hidden">
+        <div class="layers-header">
+            <p>Project Structure</p>
+        </div>
+        <div id="layersList" class="layers-list">
+            <!-- Items injected by JS -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- === CANVAS === -->
+    <main id="canvasWrapper">
+      <div id="canvasFrame">
+        <div id="canvas">
+          <div id="canvas-empty-state">
+            <i class="fa-solid fa-hand-pointer fa-2xl"></i>
+            <p>Drag components from the left panel<br />and drop them here to start building.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- === RIGHT SIDEBAR: Properties Panel === -->
+    <aside id="propPanel">
+      <div id="propPanelContent">
+        <div class="prop-empty">
+          <i class="fa-solid fa-arrow-pointer"></i>
+          <p>Click any element on the canvas to edit its properties.</p>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- ====== PAGES BAR ====== -->
+  <footer id="pages-bar">
+    <div class="pages-list" id="pagesList">
+      <!-- Pages injected by JS -->
+    </div>
+    <button id="addPageBtn" class="add-page-btn" title="Add New Page">
+      <i class="fa-solid fa-plus"></i> New Page
+    </button>
+  </footer>
+
+  <!-- ====== MODALS ====== -->
+
+  <!-- Site Settings Modal -->
+  <div id="metaModal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-sliders"></i> Site Settings</h2>
+        <button class="modal-close" data-modal="metaModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label>Site Title</label><input type="text" id="meta-title"
+            placeholder="My Awesome Website" /></div>
+        <div class="form-group"><label>Description</label><textarea id="meta-desc" rows="2"
+            placeholder="Short site description for SEO…"></textarea></div>
+        <div class="form-group"><label>Keywords</label><input type="text" id="meta-keywords"
+            placeholder="html, website, portfolio" /></div>
+        <div class="form-group"><label>Favicon URL</label><input type="text" id="meta-favicon"
+            placeholder="https://example.com/favicon.ico" /></div>
+        <div class="form-group"><label>Custom &lt;head&gt; Scripts / Analytics</label><textarea id="meta-scripts"
+            rows="4" placeholder="&lt;script&gt;…&lt;/script&gt;"></textarea></div>
+        <div class="form-group"><label>Google Fonts URL</label><input type="text" id="meta-fonts"
+            placeholder="https://fonts.googleapis.com/css2?family=Inter…" /></div>
+        <div class="form-group"><label>Robots.txt Content</label><textarea id="meta-robots"
+            rows="3" placeholder="User-agent: *&#10;Allow: /"></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button class="tb-btn primary" id="saveMetaBtn">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div id="importModal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-file-import"></i> Import Project / HTML</h2>
+        <button class="modal-close" data-modal="importModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p class="info-text">Restore a previously exported project to continue editing, or import raw HTML.</p>
+        
+        <div class="form-group">
+            <label><i class="fa-solid fa-file-zipper"></i> Upload Project ZIP</label>
+            <input type="file" id="importZip" accept=".zip" />
+        </div>
+
+        <div class="form-group">
+            <label><i class="fa-solid fa-folder-open"></i> Upload Website Folder</label>
+            <input type="file" id="importFolder" webkitdirectory directory />
+        </div>
+
+        <div class="divider-text"><span>OR RAW HTML</span></div>
+
+        <div class="form-group">
+            <label>Upload HTML File</label>
+            <input type="file" id="importFile" accept=".html,.htm" />
+        </div>
+        <div class="form-group">
+            <label>Paste HTML code:</label>
+            <textarea id="importPaste" rows="5" placeholder="&lt;section&gt;…&lt;/section&gt;"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="tb-btn primary" id="doImportBtn">Import</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview Modal -->
+  <div id="previewModal" class="modal-overlay hidden">
+    <div class="modal modal-xl">
+      <div class="modal-header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <h2><i class="fa-solid fa-eye"></i> Live Preview</h2>
+          <div class="preview-device-toolbar">
+            <button class="preview-dev-btn active" data-width="100%" title="Desktop"><i class="fa-solid fa-desktop"></i></button>
+            <button class="preview-dev-btn" data-width="768px" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+            <button class="preview-dev-btn" data-width="375px" title="Mobile"><i class="fa-solid fa-mobile-screen"></i></button>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <span id="previewSizeDisplay" style="font-size:0.75rem;color:var(--text3);font-family:monospace;background:var(--surface2);padding:2px 8px;border-radius:4px;">100%</span>
+          <button class="modal-close" data-modal="previewModal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+      <div class="modal-body p0" style="position:relative;">
+        <iframe id="previewFrame"></iframe>
+        <div id="previewResizer" style="position:absolute;right:0;top:0;bottom:0;width:10px;cursor:ew-resize;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+          <div style="width:2px;height:30px;background:rgba(255,255,255,0.2);border-radius:2px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== THEMES MODAL ====== -->
+  <div id="themeModal" class="modal-overlay hidden">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-palette"></i> Choose a Theme</h2>
+        <button class="modal-close" data-modal="themeModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p class="info-text">Select a theme to instantly change your website's colors, fonts, and style.</p>
+        <div class="theme-type-label">◆ Solid</div>
+        <div class="theme-grid" id="themeGridSolid"></div>
+        <div class="theme-type-label">◈ Gradient</div>
+        <div class="theme-grid" id="themeGridGradient"></div>
+        <div class="theme-type-label">✦ Blob</div>
+        <div class="theme-grid" id="themeGridBlob"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="tb-btn secondary" id="clearThemeBtn"><i class="fa-solid fa-xmark"></i> Clear Theme</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== CONTEXT MENU ====== -->
+  <div id="contextMenu" class="hidden">
+    <ul>
+      <li id="ctxMoveUp"><i class="fa-solid fa-arrow-up"></i> Move Up</li>
+      <li id="ctxMoveDown"><i class="fa-solid fa-arrow-down"></i> Move Down</li>
+      <li id="ctxDuplicate"><i class="fa-solid fa-copy"></i> Duplicate</li>
+      <li class="divider"></li>
+      <li id="ctxDelete" class="danger"><i class="fa-solid fa-trash"></i> Delete</li>
+    </ul>
+  </div>
+
+  <!-- Hidden file input for import -->
+  <input type="file" id="importFile2" accept=".html,.htm" style="display:none" />
+
+  <!-- Libraries (CDN — no npm needed) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <!-- Builder modules -->
+  <script src="js/state.js?v=2"></script>
+  <script src="js/themes.js?v=3"></script>
+  <script src="js/cart.js?v=2"></script>
+  <script src="js/blocks.js?v=3"></script>
+  <script src="js/palette.js?v=2"></script>
+  <script src="js/pages.js?v=2"></script>
+  <script src="js/canvas.js?v=2"></script>
+  <script src="js/properties.js?v=4"></script>
+  <script src="js/export.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+</body>
+
+</html>
